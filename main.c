@@ -82,6 +82,8 @@ int main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 
+	if (argc != 2)
+		return (0);
 	vars.map = parser(&vars, argv[1]);
 	if (vars.map == NULL)
 		return (printf("Error \nmap is invalid\n"));
