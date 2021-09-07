@@ -42,6 +42,8 @@ static	int	ft_check_elem(char **map)
 int	ft_check_map(char **map, t_vars *vars)
 {
 	(void) vars;
+	if (!map)
+		return (0);
 	if (ft_check_elem(map) == 0)
 		return (0);
 	if (ft_is_surround(map) == 0)

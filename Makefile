@@ -9,7 +9,8 @@ HEADERS = header.h libft/libft.h src/get_next_line/get_next_line.h src/map_valid
 SRC = 	main.c src/init.c src/utils.c src/get_next_line/get_next_line.c src/get_next_line/get_next_line_utils.c \
 		src/parser/parser.c src/parser/utils.c src/parser/ft_get_data.c src/parser/ft_get_map.c src/parser/ft_check_data.c \
 		src/parser/ft_is_texture.c src/map_validator/ft_check_map.c src/map_validator/ft_is_surround.c \
-		src/map_validator/ft_splist.c src/print_map/ft_print_map.c src/parser/validation_texture.c
+		src/map_validator/ft_splist.c src/print_map/ft_print_map.c src/parser/validation_texture.c src/parser/validation_data.c \
+		src/moves/ft_hooks.c src/moves/turn.c
 
 OBJECTS = $(patsubst %.c, %.o, $(SRC))
 

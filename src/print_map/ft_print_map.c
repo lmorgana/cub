@@ -11,11 +11,13 @@ void	my_mlx_pixel_put(t_vars *vars, int x, int y, int color)
 {
 	char	*dst;
 
+	if (y <= 0)
+		return;
 	dst = vars->win.addr + (y * vars->win.line_l + x * (vars->win.bpp / 8));
 	*(unsigned int *) dst = color;
 }
 
-int	verLine (t_vars *vars, int x, int start, int end, int color)
+int piece(t_vars *vars, int x, int start, int end, int color)
 {
 	while (start < end)
 	{
@@ -23,6 +25,19 @@ int	verLine (t_vars *vars, int x, int start, int end, int color)
 		start++;
 	}
 	return (0);
+}
+
+int	verLine (t_vars *vars, int x, int start, int end, int color)
+{
+	piece(vars, x, 0, start, (int) vars->color_c);
+	piece(vars, x, start, end, color);
+	piece(vars, x, end, screenHeight - 1, (int) vars->color_f);
+	return (0);
+}
+
+int	ft_get_clr_txt(int x, int y, t_img_text *txt)
+{
+	return (*(unsigned int *) (txt->addr + (y * txt->line_length + x * (txt->bits_per_pixel / 8))));
 }
 
 int	ft_print_map(t_vars *vars)
@@ -110,11 +125,54 @@ int	ft_print_map(t_vars *vars)
 		int drawEnd = lineHeight / 2 + screenHeight / 2;
 		if(drawEnd >= screenHeight)drawEnd = screenHeight - 1;
 
-		if (side == 1)
-			verLine(vars, x, drawStart, drawEnd, 0x57f542);
-		else
-			verLine(vars, x, drawStart, drawEnd, 0x498c41);
+
+		//int texNum = 1; //1 subtracted from it so that texture 0 can be used!
+
+		//calculate value of wallX
+		double wallX; //where exactly the wall was hit
+		if (side == 0) wallX = vars->plr.posY + perpWallDist * rayDirY;
+		else           wallX = vars->plr.posX + perpWallDist * rayDirX;
+		wallX -= floor((wallX));
+
+		//x coordinate on the texture
+		int texX = (int) (wallX * (double) vars->img_text[0].width);
+
+		if(side == 0 && rayDirX > 0) texX = vars->img_text[0].width - texX - 1;
+		if(side == 1 && rayDirY < 0) texX = vars->img_text[0].width - texX - 1;
+
+
+		double step = 1.0 * vars->img_text[0].height / lineHeight;
+		// Starting texture coordinate
+		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
+		int y = drawStart;
+
+		piece(vars, x, 0, drawStart, (int) vars->color_c);
+		while (y < drawEnd)
+		{// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
+			int texY = (int)texPos & (vars->img_text[0].height - 1);
+			texPos += step;
+
+			int	color;
+			if (side)
+			{
+				if (stepY == 1)
+					color = ft_get_clr_txt(texX, texY, &vars->img_text[3]);
+				else
+					color = ft_get_clr_txt(texX, texY, &vars->img_text[2]);
+			}
+			else
+			{
+				if (stepX == 1)
+					color = ft_get_clr_txt(texX, texY, &vars->img_text[1]);
+				else
+					color = ft_get_clr_txt(texX, texY, &vars->img_text[0]);
+			}
+			my_mlx_pixel_put(vars, x, y, color);
+			y++;
+		}
+		piece(vars, x, drawEnd, screenHeight - 1, (int) vars->color_f);
 		x++;
 	}
 	return (1);
 }
+

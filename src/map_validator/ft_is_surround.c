@@ -79,7 +79,7 @@ static	int	ft_start_paint(char **map, t_splst *lst)
 	return (1);
 }
 
-void ft_get_back(char **map, t_hero *hero)
+void	ft_get_back(char **map, t_hero *hero)
 {
 	int	i;
 	int	j;

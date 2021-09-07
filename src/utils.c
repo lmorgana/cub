@@ -12,10 +12,17 @@
 
 #include "../header.h"
 
+unsigned	long	ft_get_rgb(int r, int g, int b)
+{
+	return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
 void	ft_clear_arr(char **arr)
 {
 	int	i;
 
+	if (!arr)
+		return ;
 	i = 0;
 	while (arr[i] != NULL)
 	{

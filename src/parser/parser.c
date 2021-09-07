@@ -18,7 +18,7 @@ static	char	*ft_ch_nm_file(char *name)
 
 	if (name)
 	{
-		str = ft_strnstr(name, ".ber", ft_strlen(name));
+		str = ft_strnstr(name, ".cub", ft_strlen(name));
 		if (str && ft_strlen(str) == 4)
 		{
 			return (name);

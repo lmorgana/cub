@@ -29,6 +29,25 @@ int	ft_free_texture(t_texture *texture)
 	return (1);
 }
 
+int	ft_is_spases(char *str)
+{
+	int	i;
+
+	if (!str)
+	{
+		printf("yep1\n");
+		return (0);
+	}
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] != ' ')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	ft_len_space(char *str)
 {
 	int	i;
@@ -43,4 +62,36 @@ int	ft_len_space(char *str)
 		i++;
 	}
 	return (count);
+}
+
+int	ft_set_null(char **arr, int len)
+{
+	int	i;
+
+	if (!arr)
+		return (0);
+	i = 0;
+	while (i < len)
+	{
+		arr[i] = NULL;
+		i++;
+	}
+	return (1);
+}
+
+int	ft_is_map(char *str)
+{
+	int	i;
+
+	if (str[0] == '\0')
+		return (0);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] != ' ' && str[i] != '1' && str[i] != '0' && \
+		str[i] != 'W' && str[i] != 'E' && str[i] != 'N' && str[i] != 'S')
+			return (0);
+		i++;
+	}
+	return (1);
 }

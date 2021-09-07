@@ -54,7 +54,7 @@ static char	*ft_get_str_of_data(char *str)
 			stat_sp = 1;
 		}
 		else if (str[i] == ' ')
-			i++;
+			continue;
 		else
 			str_new[++j] = str[i];
 	}
@@ -97,21 +97,21 @@ int	fill_data(char **arr, char **data)
 
 	i = -1;
 	count = -1;
-	while (arr[++i])
+	while (arr[++i] && !ft_is_map(arr[i]))
 	{
 		if (ft_is_data(arr[i]))
 		{
 			if (++count >= 6)
-			{
-				data[count] = NULL;
 				return (0);
-			}
 			data[count] = ft_get_str_of_data(arr[i]);
 			if (data[count] == NULL)
 				return (0);
 		}
+		else if (ft_is_spases(arr[i]))
+			continue ;
+		else
+			return (0);
 	}
-	data[++count] = NULL;
 	return (1);
 }
 
@@ -120,6 +120,7 @@ char	**get_data(char **arr)
 	char	**data;
 
 	data = malloc (sizeof (char *) * (7));
+	ft_set_null(data, 7);
 	if (data)
 	{
 		if (fill_data(arr, data) == 0)

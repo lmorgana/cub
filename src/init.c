@@ -14,30 +14,38 @@
 
 static	int	ft_set_dir(t_vars *vars, char ch)
 {
-	if (ch == 'N')
+	if (ch == 'E')
 	{
 		vars->plr.dirX = 0;
 		vars->plr.dirY = -1;
-	}
-	if (ch == 'S')
-	{
-		vars->plr.dirX = 0;
-		vars->plr.dirY = 1;
+		vars->plr.planeX = -0.66;
+		vars->plr.planeY = 0;
 	}
 	if (ch == 'W')
 	{
-		vars->plr.dirX = 1;
-		vars->plr.dirY = 0;
+		vars->plr.dirX = 0;
+		vars->plr.dirY = 1;
+		vars->plr.planeX = 0.66;
+		vars->plr.planeY = 0;
 	}
-	if (ch == 'E')
+	if (ch == 'N')
 	{
 		vars->plr.dirX = -1;
 		vars->plr.dirY = 0;
+		vars->plr.planeX = 0;
+		vars->plr.planeY = 0.66;
+	}
+	if (ch == 'S')
+	{
+		vars->plr.dirX = 1;
+		vars->plr.dirY = 0;
+		vars->plr.planeX = 0;
+		vars->plr.planeY = -0.66;
 	}
 	return (1);
 }
 
-static	int	ft_plr(t_vars *vars)
+static	int	ft_get_xy(t_vars *vars, int *posX, int *posY)
 {
 	int	i;
 	int j;
@@ -51,9 +59,8 @@ static	int	ft_plr(t_vars *vars)
 			if (vars->map[i][j] == 'N' || vars->map[i][j] == 'S' \
 			|| vars->map[i][j] == 'W' || vars->map[i][j] == 'E')
 			{
-				vars->plr.posX = i;
-				vars->plr.posY = j;
-				ft_set_dir(vars, vars->map[i][j]);
+				*posX = i;
+				*posY = j;
 			}
 			j++;
 		}
@@ -62,11 +69,34 @@ static	int	ft_plr(t_vars *vars)
 	return (1);
 }
 
+void	ft_set_XY(t_vars *vars)
+{
+	int	posX;
+	int	posY;
+
+	posX = (int) vars->plr.posX;
+	posY = (int) vars->plr.posY;
+	if (vars->map[posX + 1][posY + 1] && vars->map[posX + 1][posY + 1] == '0')
+	{
+		vars->plr.posX += 0.5;
+		vars->plr.posY += 0.5;
+	}
+	else if (vars->map[posX - 1][posY - 1] && vars->map[posX - 1][posY - 1] == '0')
+	{
+		vars->plr.posX -= 0.5;
+		vars->plr.posY -= 0.5;
+	}
+}
+
 void	ft_plr_init(t_vars *vars)
 {
-	ft_plr(vars);
-	vars->plr.planeX = -0.66;
-	vars->plr.planeY = 0;
-	vars->plr.time = 0;
-	vars->plr.oldTime = 0;
+	int	posX;
+	int	posY;
+
+	ft_get_xy(vars, &posX, &posY);
+	vars->plr.posX = posX;
+	vars->plr.posY = posY;
+	ft_set_dir(vars, vars->map[posX][posY]);
+	vars->map[posX][posY] = '0';
+	ft_set_XY(vars);
 }

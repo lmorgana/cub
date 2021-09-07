@@ -12,23 +12,6 @@
 
 #include "../../header.h"
 
-static int	ft_is_map(char *str)
-{
-	int	i;
-
-	if (str[0] == '\0')
-		return (0);
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] != ' ' && str[i] != '1' && str[i] != '0' && \
-		str[i] != 'W' && str[i] != 'E' && str[i] != 'N' && str[i] != 'S')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 static int	ft_check_last(char **arr)
 {
 	int	i;
@@ -92,30 +75,38 @@ static	int	ft_start_map(char **arr)
 	return (-1);
 }
 
+static	int	ft_fill_map(char **arr, char **map, int len)
+{
+	int	i;
+	int	j;
+
+	i = ft_start_map(arr) - 1;
+	j = -1;
+	while (++i >= 0 && arr[i] && ++j < len)
+	{
+		map[j] = ft_strdup(arr[i]);
+		if (map[j] == NULL)
+			return (0);
+	}
+	map[++j] = NULL;
+	return (1);
+}
+
 char	**get_map(char **arr)
 {
 	char	**map;
 	int		len;
-	int		i;
-	int		j;
 
 	len = ft_len_of_map(arr);
+	if (len < 3)
+		return (0);
 	map = malloc(sizeof (char *) * (ft_len_of_map(arr) + 1));
 	if (map)
 	{
-		i = ft_start_map(arr) - 1;
-		j = -1;
-		while (++i >= 0 && arr[i] && ++j < len)
-		{
-			map[j] = ft_strdup(arr[i]);
-			if (map[j] == NULL)
-			{
-				ft_clear_arr(map);
-				return (NULL);
-			}
-		}
-		map[++j] = NULL;
-		return (map);
+		if (ft_fill_map(arr, map, len))
+			return (map);
+		ft_clear_arr(map);
+		return (NULL);
 	}
 	return (NULL);
 }

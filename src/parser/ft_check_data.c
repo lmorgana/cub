@@ -84,10 +84,10 @@ int	ft_check_data(char **data, t_vars *vars)
 	int		i;
 	char	**name_value;
 
-	ft_init_data(vars);
-	i = 0;
 	if (!data)
 		return (0);
+	ft_init_data(vars);
+	i = 0;
 	while (data[i])
 	{
 		name_value = ft_split(data[i], ' ');
