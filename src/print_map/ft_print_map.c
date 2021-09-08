@@ -1,178 +1,112 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_print_map.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmorgana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 18:03:37 by lmorgana          #+#    #+#             */
+/*   Updated: 2021/09/08 18:03:39 by lmorgana         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../header.h"
 
-double	ft_abs(double n)
+static	int	ft_get_cd(t_comm_data *cd, t_vars *vars)
 {
-	if (n < 0)
-		return (n * -1);
-	return (n);
+	t_inside_data	id;
+
+	ft_set_dir_print(&id, cd, vars);
+	ft_cast_ray(&id, cd, vars);
+	if (cd->side == 0)
+		cd->perpWallDist = (id.mapX - vars->plr.posX + \
+		(double)(1 - cd->stepX) / 2) / cd->rayDirX;
+	else
+		cd->perpWallDist = (id.mapY - vars->plr.posY + \
+		(double)(1 - cd->stepY) / 2) / cd->rayDirY;
+	cd->lineHeight = (int)(SCREENHEIGHT / cd->perpWallDist);
+	cd->drawStart = -cd->lineHeight / 2 + SCREENHEIGHT / 2;
+	if (cd->drawStart < 0)
+		cd->drawStart = 0;
+	cd->drawEnd = cd->lineHeight / 2 + SCREENHEIGHT / 2;
+	if (cd->drawEnd >= SCREENHEIGHT)
+		cd->drawEnd = SCREENHEIGHT - 1;
+	return (1);
 }
 
-void	my_mlx_pixel_put(t_vars *vars, int x, int y, int color)
+static	int	ft_get_texX(t_comm_data *cd, t_vars *vars)
 {
-	char	*dst;
+	int		texX;
+	double	wallX;
 
-	if (y <= 0)
-		return;
-	dst = vars->win.addr + (y * vars->win.line_l + x * (vars->win.bpp / 8));
-	*(unsigned int *) dst = color;
+	if (cd->side == 0)
+		wallX = vars->plr.posY + cd->perpWallDist * cd->rayDirY;
+	else
+		wallX = vars->plr.posX + cd->perpWallDist * cd->rayDirX;
+	wallX -= floor((wallX));
+	texX = (int)(wallX * (double)vars->img_text[0].width);
+	if (cd->side == 0 && cd->rayDirX > 0)
+		texX = vars->img_text[0].width - texX - 1;
+	if (cd->side == 1 && cd->rayDirY < 0)
+		texX = vars->img_text[0].width - texX - 1;
+	return (texX);
 }
 
-int piece(t_vars *vars, int x, int start, int end, int color)
+static	int	ft_put_pxl(t_comm_data *cd, t_vars *vars, int texX, int texY)
 {
-	while (start < end)
+	int	color;
+
+	if (cd->side)
 	{
-		my_mlx_pixel_put(vars, x, start, color);
-		start++;
+		if (cd->stepY == 1)
+			color = ft_get_clr_txt(texX, texY, &vars->img_text[3]);
+		else
+			color = ft_get_clr_txt(texX, texY, &vars->img_text[2]);
 	}
-	return (0);
+	else
+	{
+		if (cd->stepX == 1)
+			color = ft_get_clr_txt(texX, texY, &vars->img_text[1]);
+		else
+			color = ft_get_clr_txt(texX, texY, &vars->img_text[0]);
+	}
+	my_mlx_pixel_put(vars, cd->x, cd->y, color);
+	return (1);
 }
 
-int	verLine (t_vars *vars, int x, int start, int end, int color)
+static	int	ft_print_image(t_comm_data *cd, t_vars *vars)
 {
-	piece(vars, x, 0, start, (int) vars->color_c);
-	piece(vars, x, start, end, color);
-	piece(vars, x, end, screenHeight - 1, (int) vars->color_f);
-	return (0);
-}
+	int		texX;
+	int		texY;
+	double	step;
+	double	texPos;
 
-int	ft_get_clr_txt(int x, int y, t_img_text *txt)
-{
-	return (*(unsigned int *) (txt->addr + (y * txt->line_length + x * (txt->bits_per_pixel / 8))));
+	texX = ft_get_texX(cd, vars);
+	step = 1.0 * vars->img_text[0].height / cd->lineHeight;
+	texPos = (cd->drawStart - SCREENHEIGHT / 2 + cd->lineHeight / 2) * step;
+	cd->y = cd->drawStart;
+	piece(vars, cd->x, 0, cd->drawStart);
+	while (cd->y < cd->drawEnd)
+	{
+		texY = (int)texPos & (vars->img_text[0].height - 1);
+		texPos += step;
+		ft_put_pxl(cd, vars, texX, texY);
+		cd->y++;
+	}
+	piece(vars, cd->x, cd->drawEnd, SCREENHEIGHT - 1);
+	return (1);
 }
 
 int	ft_print_map(t_vars *vars)
 {
-	int	x;
+	t_comm_data	cd;
 
-	x = 0;
-	while (x < screenWidth)
+	cd.x = 0;
+	while (cd.x < SCREENWIDTH)
 	{
-		double cameraX = 2 * x / (double) screenWidth - 1; //x-coordinate in camera space
-		double rayDirX = vars->plr.dirX +  vars->plr.planeX * cameraX;
-		double rayDirY =  vars->plr.dirY +  vars->plr.planeY * cameraX;
-
-		int mapX = (int) vars->plr.posX;
-		int mapY = (int) vars->plr.posY;
-
-		//length of ray from current position to next x or y-side
-		double sideDistX;
-		double sideDistY;
-
-		//length of ray from one x or y-side to next x or y-side
-		double deltaDistX = (rayDirY == 0) ? 0 : ((rayDirX == 0) ? 1 : ft_abs(1 / rayDirX));
-		double deltaDistY = (rayDirX == 0) ? 0 : ((rayDirY == 0) ? 1 : ft_abs(1 / rayDirY));
-
-		double perpWallDist;
-
-		//what direction to step in x or y-direction (either +1 or -1)
-		int stepX;
-		int stepY;
-
-		int hit = 0; //was there a wall hit?
-		int side; //was a NS or a EW wall hit?
-
-
-		if (rayDirX < 0)
-		{
-			stepX = -1;
-			sideDistX = (vars->plr.posX - mapX) * deltaDistX;
-		}
-		else
-		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - vars->plr.posX) * deltaDistX;
-		}
-		if (rayDirY < 0)
-		{
-			stepY = -1;
-			sideDistY = (vars->plr.posY - mapY) * deltaDistY;
-		}
-		else
-		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - vars->plr.posY) * deltaDistY;
-		}
-
-		while (hit == 0)
-		{
-			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
-			}
-			else
-			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if (vars->map[mapX][mapY] == '1') hit = 1;
-		}
-
-		if (side == 0) perpWallDist = (mapX - vars->plr.posX + (double) (1 - stepX) / 2) / rayDirX;
-		else           perpWallDist = (mapY - vars->plr.posY + (double) (1 - stepY) / 2) / rayDirY;
-
-
-		int lineHeight = (int)(screenHeight / perpWallDist);
-
-
-		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / 2 + screenHeight / 2;
-		if(drawStart < 0)drawStart = 0;
-		int drawEnd = lineHeight / 2 + screenHeight / 2;
-		if(drawEnd >= screenHeight)drawEnd = screenHeight - 1;
-
-
-		//int texNum = 1; //1 subtracted from it so that texture 0 can be used!
-
-		//calculate value of wallX
-		double wallX; //where exactly the wall was hit
-		if (side == 0) wallX = vars->plr.posY + perpWallDist * rayDirY;
-		else           wallX = vars->plr.posX + perpWallDist * rayDirX;
-		wallX -= floor((wallX));
-
-		//x coordinate on the texture
-		int texX = (int) (wallX * (double) vars->img_text[0].width);
-
-		if(side == 0 && rayDirX > 0) texX = vars->img_text[0].width - texX - 1;
-		if(side == 1 && rayDirY < 0) texX = vars->img_text[0].width - texX - 1;
-
-
-		double step = 1.0 * vars->img_text[0].height / lineHeight;
-		// Starting texture coordinate
-		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
-		int y = drawStart;
-
-		piece(vars, x, 0, drawStart, (int) vars->color_c);
-		while (y < drawEnd)
-		{// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
-			int texY = (int)texPos & (vars->img_text[0].height - 1);
-			texPos += step;
-
-			int	color;
-			if (side)
-			{
-				if (stepY == 1)
-					color = ft_get_clr_txt(texX, texY, &vars->img_text[3]);
-				else
-					color = ft_get_clr_txt(texX, texY, &vars->img_text[2]);
-			}
-			else
-			{
-				if (stepX == 1)
-					color = ft_get_clr_txt(texX, texY, &vars->img_text[1]);
-				else
-					color = ft_get_clr_txt(texX, texY, &vars->img_text[0]);
-			}
-			my_mlx_pixel_put(vars, x, y, color);
-			y++;
-		}
-		piece(vars, x, drawEnd, screenHeight - 1, (int) vars->color_f);
-		x++;
+		ft_get_cd(&cd, vars);
+		ft_print_image(&cd, vars);
+		cd.x++;
 	}
 	return (1);
 }
-

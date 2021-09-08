@@ -36,10 +36,14 @@ int	ft_get_xmp_to_img(t_vars *vars, t_img_text	*textures)
 int	ft_get_adress(t_vars *vars, t_img_text *textures)
 {
 	(void) vars;
-	textures[0].addr = mlx_get_data_addr(textures[0].img_texture, &textures[0].bits_per_pixel, &textures[0].line_length, &textures[0].endian);
-	textures[1].addr = mlx_get_data_addr(textures[1].img_texture, &textures[1].bits_per_pixel, &textures[1].line_length, &textures[1].endian);
-	textures[2].addr = mlx_get_data_addr(textures[2].img_texture, &textures[2].bits_per_pixel, &textures[2].line_length, &textures[2].endian);
-	textures[3].addr = mlx_get_data_addr(textures[3].img_texture, &textures[3].bits_per_pixel, &textures[3].line_length, &textures[3].endian);
+	textures[0].addr = mlx_get_data_addr(textures[0].img_texture, \
+	&textures[0].bits_per_pixel, &textures[0].line_length, &textures[0].endian);
+	textures[1].addr = mlx_get_data_addr(textures[1].img_texture, \
+	&textures[1].bits_per_pixel, &textures[1].line_length, &textures[1].endian);
+	textures[2].addr = mlx_get_data_addr(textures[2].img_texture, \
+	&textures[2].bits_per_pixel, &textures[2].line_length, &textures[2].endian);
+	textures[3].addr = mlx_get_data_addr(textures[3].img_texture, \
+	&textures[3].bits_per_pixel, &textures[3].line_length, &textures[3].endian);
 	return (1);
 }
 

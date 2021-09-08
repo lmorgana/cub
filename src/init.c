@@ -6,7 +6,7 @@
 /*   By: lmorgana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 20:03:28 by lmorgana          #+#    #+#             */
-/*   Updated: 2021/08/31 22:18:30 by                  ###   ########.fr       */
+/*   Updated: 2021/09/08 17:21:08 by                  ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,28 @@
 
 static	int	ft_set_dir(t_vars *vars, char ch)
 {
+	vars->plr.dirX = 0;
+	vars->plr.dirY = 0;
+	vars->plr.planeX = 0;
+	vars->plr.planeY = 0;
 	if (ch == 'E')
 	{
-		vars->plr.dirX = 0;
 		vars->plr.dirY = -1;
 		vars->plr.planeX = -0.66;
-		vars->plr.planeY = 0;
 	}
 	if (ch == 'W')
 	{
-		vars->plr.dirX = 0;
 		vars->plr.dirY = 1;
 		vars->plr.planeX = 0.66;
-		vars->plr.planeY = 0;
 	}
 	if (ch == 'N')
 	{
 		vars->plr.dirX = -1;
-		vars->plr.dirY = 0;
-		vars->plr.planeX = 0;
 		vars->plr.planeY = 0.66;
 	}
 	if (ch == 'S')
 	{
 		vars->plr.dirX = 1;
-		vars->plr.dirY = 0;
-		vars->plr.planeX = 0;
 		vars->plr.planeY = -0.66;
 	}
 	return (1);
@@ -48,7 +44,7 @@ static	int	ft_set_dir(t_vars *vars, char ch)
 static	int	ft_get_xy(t_vars *vars, int *posX, int *posY)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 0;
 	while (vars->map[i])
@@ -81,7 +77,8 @@ void	ft_set_XY(t_vars *vars)
 		vars->plr.posX += 0.5;
 		vars->plr.posY += 0.5;
 	}
-	else if (vars->map[posX - 1][posY - 1] && vars->map[posX - 1][posY - 1] == '0')
+	else if (vars->map[posX - 1][posY - 1] && \
+	vars->map[posX - 1][posY - 1] == '0')
 	{
 		vars->plr.posX -= 0.5;
 		vars->plr.posY -= 0.5;

@@ -54,7 +54,7 @@ static char	*ft_get_str_of_data(char *str)
 			stat_sp = 1;
 		}
 		else if (str[i] == ' ')
-			continue;
+			continue ;
 		else
 			str_new[++j] = str[i];
 	}
