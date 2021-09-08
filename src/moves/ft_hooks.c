@@ -3,48 +3,48 @@
 void	move_up(t_vars *vars, double moveSpeed)
 {
 	if (vars->map[(int)(vars->plr.posX + vars->plr.dirX * \
-	moveSpeed)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX + vars->plr.dirX * \
-	moveSpeed)][(int)(vars->plr.posY)] == '0')
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX + vars->plr.dirX * \
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] == '0')
 		vars->plr.posX += vars->plr.dirX * moveSpeed;
 	if (vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
-	vars->plr.dirY * moveSpeed)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
-	vars->plr.dirY * moveSpeed)] == '0')
+	vars->plr.dirY * moveSpeed * 1.2)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
+	vars->plr.dirY * moveSpeed * 1.2)] == '0')
 		vars->plr.posY += vars->plr.dirY * moveSpeed;
 }
 
 void	move_down(t_vars *vars, double moveSpeed)
 {
 	if (vars->map[(int)(vars->plr.posX - vars->plr.dirX * \
-	moveSpeed)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX - vars->plr.dirX * \
-	moveSpeed)][(int)(vars->plr.posY)] == '0')
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX - vars->plr.dirX * \
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] == '0')
 		vars->plr.posX -= vars->plr.dirX * moveSpeed;
 	if (vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
-	vars->plr.dirY * moveSpeed)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
-	vars->plr.dirY * moveSpeed)] == '0')
+	vars->plr.dirY * moveSpeed * 1.2)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
+	vars->plr.dirY * moveSpeed * 1.2)] == '0')
 		vars->plr.posY -= vars->plr.dirY * moveSpeed;
 }
 
 void	move_left(t_vars *vars, double moveSpeed)
 {
 	if (vars->map[(int)(vars->plr.posX - vars->plr.dirY * \
-	moveSpeed)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX - vars->plr.dirY * \
-	moveSpeed)][(int)(vars->plr.posY)] == '0')
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX - vars->plr.dirY * \
+	moveSpeed * 1.2)][(int)(vars->plr.posY)] == '0')
 		vars->plr.posX -= vars->plr.dirY * moveSpeed;
 	if (vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
-	vars->plr.dirX * moveSpeed)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
-	vars->plr.dirX * moveSpeed)] == '0')
+	vars->plr.dirX * moveSpeed * 1.2)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY + \
+	vars->plr.dirX * moveSpeed * 1.2)] == '0')
 		vars->plr.posY += vars->plr.dirX * moveSpeed;
 }
 
 void	move_right(t_vars *vars, double moveSpeed)
 {
 	if (vars->map[(int)(vars->plr.posX + \
-	vars->plr.dirY * moveSpeed)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX + \
-	vars->plr.dirY * moveSpeed)][(int)(vars->plr.posY)] == '0')
+	vars->plr.dirY * moveSpeed * 1.2)][(int)(vars->plr.posY)] && vars->map[(int)(vars->plr.posX + \
+	vars->plr.dirY * moveSpeed* 1.2)][(int)(vars->plr.posY)] == '0')
 		vars->plr.posX += vars->plr.dirY * moveSpeed;
 	if (vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
-	vars->plr.dirX * moveSpeed)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
-	vars->plr.dirX * moveSpeed)] == '0')
+	vars->plr.dirX * moveSpeed * 1.2)] && vars->map[(int)(vars->plr.posX)][(int)(vars->plr.posY - \
+	vars->plr.dirX * moveSpeed * 1.2)] == '0')
 		vars->plr.posY -= vars->plr.dirX * moveSpeed;
 }
 
