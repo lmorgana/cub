@@ -6,7 +6,7 @@
 /*   By: lmorgana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 18:09:30 by lmorgana          #+#    #+#             */
-/*   Updated: 2021/09/08 18:09:32 by lmorgana         ###   ########.fr       */
+/*   Updated: 2021/09/08 20:00:28 by                  ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ int	ft_hooks(int keycode, t_vars *vars)
 
 	moveSpeed = 0.3;
 	rotSpeed = 0.03;
+	if (keycode == 53)
+		ft_close_all(vars);
 	if (keycode == 13)
 		move_up(vars, moveSpeed);
 	if (keycode == 1)

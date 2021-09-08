@@ -122,5 +122,6 @@ int				ft_valid_data(t_vars *vars);
 int				ft_hooks(int keycode, t_vars *vars);
 void			turn_right(t_vars *vars, double rotSpeed);
 void			turn_left(t_vars *vars, double rotSpeed);
+int				ft_close_all(t_vars *vars);
 
 #endif

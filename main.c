@@ -6,7 +6,7 @@
 /*   By: lmorgana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 20:04:14 by lmorgana          #+#    #+#             */
-/*   Updated: 2021/09/08 17:51:20 by                  ###   ########.fr       */
+/*   Updated: 2021/09/08 19:57:55 by                  ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ int	main(int argc, char **argv)
 	t_vars	vars;
 
 	if (argc != 2)
-		return (0);
+		return (printf("Error \nargument is not valid\n") * 0);
 	vars.map = parser(&vars, argv[1]);
 	if (vars.map == NULL)
 		return (printf("Error \nmap is invalid\n") * 0);
 	if (ft_valid_data(&vars) == 0)
-		return (printf("Error \nmap is invalid2\n") * 0);
+		return (printf("Error \npath is invalid\n") * 0);
 	ft_plr_init(&vars);
 	vars.win.mlx = mlx_init();
 	vars.win.win = mlx_new_window(vars.win.mlx, SCREENWIDTH, \

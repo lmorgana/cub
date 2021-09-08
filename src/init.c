@@ -6,7 +6,7 @@
 /*   By: lmorgana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 20:03:28 by lmorgana          #+#    #+#             */
-/*   Updated: 2021/09/08 17:21:08 by                  ###   ########.fr       */
+/*   Updated: 2021/09/08 20:37:07 by                  ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,35 +65,14 @@ static	int	ft_get_xy(t_vars *vars, int *posX, int *posY)
 	return (1);
 }
 
-void	ft_set_XY(t_vars *vars)
-{
-	int	posX;
-	int	posY;
-
-	posX = (int) vars->plr.posX;
-	posY = (int) vars->plr.posY;
-	if (vars->map[posX + 1][posY + 1] && vars->map[posX + 1][posY + 1] == '0')
-	{
-		vars->plr.posX += 0.5;
-		vars->plr.posY += 0.5;
-	}
-	else if (vars->map[posX - 1][posY - 1] && \
-	vars->map[posX - 1][posY - 1] == '0')
-	{
-		vars->plr.posX -= 0.5;
-		vars->plr.posY -= 0.5;
-	}
-}
-
 void	ft_plr_init(t_vars *vars)
 {
 	int	posX;
 	int	posY;
 
 	ft_get_xy(vars, &posX, &posY);
-	vars->plr.posX = posX;
-	vars->plr.posY = posY;
+	vars->plr.posX = posX + 0.5;
+	vars->plr.posY = posY + 0.5;
 	ft_set_dir(vars, vars->map[posX][posY]);
 	vars->map[posX][posY] = '0';
-	ft_set_XY(vars);
 }
